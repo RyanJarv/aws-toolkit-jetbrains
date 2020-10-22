@@ -45,8 +45,7 @@ object IdeVersions {
                 "com.intellij.database",
                 "Pythonid:201.6668.31"
             ),
-            riderSdkOverride = "RD-2020.1.0",
-            rdGenVersion = "0.201.69",
+            rdGenVersion = "0.203.144",
             nugetVersion = "2020.1.0"
         ),
         Profile(
@@ -64,7 +63,7 @@ object IdeVersions {
                 "com.intellij.database",
                 "Pythonid:202.6397.98"
             ),
-            rdGenVersion = "0.202.113",
+            rdGenVersion = "0.203.144",
             nugetVersion = "2020.2.0"
         ),
         Profile(
@@ -84,7 +83,7 @@ object IdeVersions {
             ),
             ijSdkOverride = "203.4818.26-EAP-SNAPSHOT",
             riderSdkOverride = "2020.3-SNAPSHOT",
-            rdGenVersion = "0.203.161",
+            rdGenVersion = "0.203.144",
             nugetVersion = "2020.3.0-eap03"
         )
     ).associateBy { it.name }

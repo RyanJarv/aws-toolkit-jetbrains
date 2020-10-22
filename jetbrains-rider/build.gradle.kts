@@ -1,7 +1,8 @@
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
+
+import com.jetbrains.rd.generator.gradle.RdGenTask
 import com.jetbrains.rd.generator.gradle.RdgenParams
-import com.jetbrains.rd.generator.gradle.RdgenTask
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import software.aws.toolkits.gradle.IdeVersions
 
@@ -66,6 +67,7 @@ intellij {
     instrumentCode = false
 }
 
+
 configure<RdgenParams> {
     verbose = true
     hashFolder = rdgenDir.toString()
@@ -92,7 +94,7 @@ configure<RdgenParams> {
     properties["csAwsProjectGeneratedOutput"] = csAwsProjectGeneratedOutput.absolutePath
 }
 
-val generateModels = tasks.register<RdgenTask>("generateModels") {
+val generateModels = tasks.register<RdGenTask>("generateModels") {
     group = protocolGroup
     description = "Generates protocol models"
 }
