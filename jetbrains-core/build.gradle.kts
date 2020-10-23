@@ -47,7 +47,7 @@ configurations {
 }
 
 val generateTelemetry = tasks.register<GenerateTelemetry>("generateTelemetry") {
-    inputFiles = listOf()
+    inputFiles = listOf(project.rootDir.resolve("telemetry-definitions.json"))
     outputDirectory = file("${project.buildDir}/generated-src")
 }
 compileKotlin.dependsOn(generateTelemetry)
