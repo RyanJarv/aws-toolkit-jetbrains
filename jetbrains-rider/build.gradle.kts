@@ -1,8 +1,8 @@
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+import com.jetbrains.rd.generator.gradle.RdGenExtension
 import com.jetbrains.rd.generator.gradle.RdGenTask
-import com.jetbrains.rd.generator.gradle.RdgenParams
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import software.aws.toolkits.gradle.IdeVersions
 
@@ -67,8 +67,7 @@ intellij {
     instrumentCode = false
 }
 
-
-configure<RdgenParams> {
+configure<RdGenExtension> {
     verbose = true
     hashFolder = rdgenDir.toString()
     logger.info("Configuring rdgen params")
@@ -80,23 +79,27 @@ configure<RdgenParams> {
 
     sources(projectDir.resolve("protocol/model"))
     packages = "model"
-
-    properties["ktDaemonGeneratedOutput"] = riderGeneratedSources.resolve("DaemonProtocol").absolutePath
-    properties["csDaemonGeneratedOutput"] = csDaemonGeneratedOutput.absolutePath
-
-    properties["ktPsiGeneratedOutput"] = riderGeneratedSources.resolve("PsiProtocol").absolutePath
-    properties["csPsiGeneratedOutput"] = csPsiGeneratedOutput.absolutePath
-
-    properties["ktAwsSettingsGeneratedOutput"] = riderGeneratedSources.resolve("AwsSettingsProtocol").absolutePath
-    properties["csAwsSettingsGeneratedOutput"] = csAwsSettingsGeneratedOutput.absolutePath
-
-    properties["ktAwsProjectGeneratedOutput"] = riderGeneratedSources.resolve("AwsProjectProtocol").absolutePath
-    properties["csAwsProjectGeneratedOutput"] = csAwsProjectGeneratedOutput.absolutePath
 }
 
 val generateModels = tasks.register<RdGenTask>("generateModels") {
     group = protocolGroup
     description = "Generates protocol models"
+
+    inputs.property("rdgen", ideProfile.rider.rdGenVersion)
+    inputs.dir(projectDir.resolve("protocol/model"))
+    outputs.dirs(csDaemonGeneratedOutput, csPsiGeneratedOutput, csAwsSettingsGeneratedOutput, csAwsProjectGeneratedOutput)
+
+    systemProperty("ktDaemonGeneratedOutput", riderGeneratedSources.resolve("DaemonProtocol").absolutePath)
+    systemProperty("csDaemonGeneratedOutput", csDaemonGeneratedOutput.absolutePath)
+
+    systemProperty("ktPsiGeneratedOutput", riderGeneratedSources.resolve("PsiProtocol").absolutePath)
+    systemProperty("csPsiGeneratedOutput", csPsiGeneratedOutput.absolutePath)
+
+    systemProperty("ktAwsSettingsGeneratedOutput", riderGeneratedSources.resolve("AwsSettingsProtocol").absolutePath)
+    systemProperty("csAwsSettingsGeneratedOutput", csAwsSettingsGeneratedOutput.absolutePath)
+
+    systemProperty("ktAwsProjectGeneratedOutput", riderGeneratedSources.resolve("AwsProjectProtocol").absolutePath)
+    systemProperty("csAwsProjectGeneratedOutput", csAwsProjectGeneratedOutput.absolutePath)
 }
 
 val cleanGenerateModels = tasks.register("cleanGenerateModels") {
@@ -208,12 +211,7 @@ fun getNugetPackagesPath(): File {
     val sdkPath = intellij.ideaDependency.classes
     println("SDK path: $sdkPath")
 
-    // 2019
-    var riderSdk = File(sdkPath, "lib/ReSharperHostSdk")
-    // 2020.1
-    if (!riderSdk.exists()) {
-        riderSdk = File(sdkPath, "lib/DotNetSdkForRdPlugins")
-    }
+    val riderSdk = File(sdkPath, "lib/DotNetSdkForRdPlugins")
 
     println("NuGet packages: $riderSdk")
     if (!riderSdk.isDirectory) throw IllegalStateException("$riderSdk does not exist or not a directory")
